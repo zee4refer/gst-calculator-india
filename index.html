@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GST Calculator India – Add or Remove GST</title>
+<style>body{font-family:system-ui,sans-serif;max-width:520px;margin:40px auto;padding:0 16px;color:#1b1b18}
+label{display:block;margin:12px 0 4px}input,select{width:100%;padding:10px;font-size:1rem;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
+table{width:100%;margin-top:16px;border-collapse:collapse}td{padding:8px 0;border-bottom:1px dashed #ddd}td:last-child{text-align:right;font-weight:600}
+a{color:#1d6b47}</style></head><body>
+<h1>GST calculator</h1>
+<label>Amount (₹)<input id="amt" type="number" value="1000"></label>
+<label>GST rate<select id="rate"><option>0.25</option><option>3</option><option>5</option><option selected>18</option><option>40</option></select></label>
+<label>Mode<select id="mode"><option value="add">Add GST</option><option value="remove">Remove GST (price includes GST)</option></select></label>
+<label>Supply<select id="inter"><option value="0">Same state (CGST + SGST)</option><option value="1">Other state (IGST)</option></select></label>
+<table id="out"></table>
+<p>Full version with quantity and more: <a href="https://billingbazaar.in/tools/gst-calculator/">billingbazaar.in/tools/gst-calculator</a> ·
+Vyapar referral code <b>NXW3QY</b></p>
+<script>var module={};</script><script src="gst.js"></script>
+<script>function formatINR(n, decimals) {
+  if (decimals === undefined) decimals = 2;
+  var neg = n < 0, s = Math.abs(n).toFixed(decimals).split('.');
+  var x = s[0], last3 = x.slice(-3), rest = x.slice(0, -3);
+  if (rest) last3 = ',' + last3;
+  return (neg ? '-' : '') + rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + last3 + (decimals ? '.' + s[1] : '');
+}
+var gst = module.exports.gst;
+function run(){var r=gst(+amt.value||0,+rate.value,{mode:mode.value,interState:inter.value==='1'});
+var rows=[['Amount before GST',r.base],['GST @'+r.rate+'%',r.gst]];
+if(r.igst!==undefined)rows.push(['IGST',r.igst]);else rows.push(['CGST',r.cgst],['SGST',r.sgst]);rows.push(['Total',r.total]);
+out.innerHTML=rows.map(function(x){return '<tr><td>'+x[0]+'</td><td>₹'+formatINR(x[1])+'</td></tr>'}).join('');}
+['amt','rate','mode','inter'].forEach(function(i){document.getElementById(i).addEventListener('input',run)});run();</script>
+</body></html>

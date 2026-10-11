@@ -1,0 +1,11 @@
+const assert = require('assert');
+const { gst } = require('./gst');
+let r = gst(1000, 18);
+assert.deepStrictEqual([r.base, r.gst, r.total, r.cgst, r.sgst], [1000, 180, 1180, 90, 90]);
+r = gst(1180, 18, { mode: 'remove' });
+assert.deepStrictEqual([r.base, r.gst, r.total], [1000, 180, 1180]);
+r = gst(1000, 5, { interState: true });
+assert.strictEqual(r.igst, 50);
+r = gst(999.99, 18);
+assert.strictEqual(Math.round((r.cgst + r.sgst) * 100), Math.round(r.gst * 100));
+console.log('gst: all tests passed');
